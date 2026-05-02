@@ -44,7 +44,7 @@ class DocumentProcessor:
         # Load the embedding model
         # SentenceTransformers converts text to 384-dimensional vectors
         # Why this model? It's small (~27MB), fast, and free
-        self.model = SentenceTransformer('all-MiniLM-L6-v2')
+        self.model = SentenceTransformer('all-MiniLM-L6-v2', device='cpu')
         
         # Initialize ChromaDB
         # This is a vector database - stores text and embeddings together
