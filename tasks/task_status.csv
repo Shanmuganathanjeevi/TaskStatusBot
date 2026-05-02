@@ -1,0 +1,5 @@
+task_id,project,title,status,due_date,dependencies,notes,last_updated
+T001,ProjectX,API Integration,In Progress,05-05-2026,T002,Waiting on DB schema,02-05-2026
+T002,ProjectY,Database Setup,Blocked,03-05-2026,None,Needs DevOps approval,02-05-2026
+T003,ProjectX,Testing Suite,Not Started,10-05-2026,T001,Can start after API,01-05-2026
+T004,ProjectZ,Deployment,On Hold,15-05-2026,T001;T002;T003,Waiting for all tasks,02-05-2026

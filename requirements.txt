@@ -1,0 +1,21 @@
+# TasksStatusBot Dependencies
+
+# Core dependencies
+# groq==0.9.0              # Groq API client (for cloud AI inference)
+# sentence-transformers==2.7.0  # Embeddings (converts text to numbers)
+# chromadb==0.5.0          # Vector database (stores and searches embeddings)
+# python-dotenv==1.0.0     # Load API keys from .env file
+
+
+groq>=1.1.0
+sentence-transformers>=3.1.0
+chromadb>=0.5.5
+python-dotenv>=1.1.0
+pypdf>=6.10.2
+Flask>=3.1.3
+Werkzeug>=3.1.8
+
+# These are installed as dependencies of the above, but listed for clarity:
+# - numpy: Math operations
+# - torch: ML framework (needed by sentence-transformers)
+# - requests: HTTP requests
