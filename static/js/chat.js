@@ -75,6 +75,12 @@ async function askQuestion() {
         
         if (response.ok) {
             addMessageToChat(data.answer, 'ai');
+            // If user is exiting, disable input
+            if (data.is_exit) {
+                questionInput.disabled = true;
+                sendBtn.disabled = true;
+                questionInput.placeholder = "Thanks for visiting!";
+            }
         } else {
             throw new Error(data.message || 'Error');
         }

@@ -98,23 +98,71 @@ def get_visitor_state(session_id):
 
 def is_task_question(text):
     """Detect if text is a task question, not a name"""
-    # Question indicators
-    question_words = ['what', 'status', 'thanks', 'okay', 'task', 'project', 'blocked', 'due', 'when', 'which', 'T0', 'T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9']
+    question_words = ['what', 'status', 'task', 'project', 'blocked', 'due', 'when', 'which', 'T0', 'T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9']
     
     text_lower = text.lower()
     
-    # Check if contains task keywords
-    has_task_keyword = any(keyword in text_lower for keyword in question_words)
+    # Check for question indicators
+    has_question_word = any(word in text_lower for word in question_words)
+    has_question_mark = '?' in text
     
-    # If very short (< 2 words), likely a name
-    if len(text.split()) < 2 and not has_task_keyword:
-        return False
-    
-    # If has task keywords, likely a question
-    if has_task_keyword:
+    # If has question word or question mark = question
+    if has_question_word or has_question_mark:
         return True
     
+    # "My name is X" should NOT be treated as question
+    if 'my name is' in text_lower or "i'm" in text_lower or 'i am' in text_lower or 'this is' in text_lower:
+        return False
+    
+    # Very short (< 3 words) without question = likely a name
+    if len(text.split()) < 3:
+        return False
+    
     return False
+
+def is_exit_message(text):
+    """Detect if user wants to end conversation"""
+    exit_words = ['bye', 'goodbye', 'thanks', 'thank you', 'exit', 'quit', 'done', 'see you', 'take care', 'cheers']
+    text_lower = text.lower().strip()
+    
+    return any(word in text_lower for word in exit_words)
+
+def extract_name(text):
+    """Extract name from various formats"""
+    text = text.strip()
+    
+    # "My name is X" format
+    if 'my name is' in text.lower():
+        name = text.split('is')[-1].strip()
+        return name
+    
+    # "I'm X" format
+    if "i'm" in text.lower():
+        name = text.split("i'm")[-1].strip()
+        return name
+    
+    # "I am X" format
+    if 'i am' in text.lower():
+        name = text.split('am')[-1].strip()
+        return name
+    
+    # "Call me X" format
+    if 'call me' in text.lower():
+        name = text.split('call me')[-1].strip()
+        return name
+    
+    # "It's X" or "This is X" format
+    if "it's" in text.lower():
+        name = text.split("it's")[-1].strip()
+        return name
+    
+    # "X here" format
+    if 'here' in text.lower():
+        name = text.split('here')[0].strip()
+        return name
+    
+    # Default: assume entire text is name
+    return text
 
 # ============================================================
 # ROUTES: Pages
@@ -192,16 +240,28 @@ def answer_question():
                 })
             
             else:
-                # First message is their name
-                visitor_state['name'] = user_input
+                # First message is their name - extract it
+                extracted_name = extract_name(user_input)
+                visitor_state['name'] = extracted_name
                 visitor_state['stage'] = 'acknowledged'
                 
                 return jsonify({
                     'status': 'success',
                     'question': user_input,
-                    'answer': f"Nice to meet you, {user_input}! 👋 I'm here to help with task status. What project/task status would you like to know?",
+                    'answer': f"Nice to meet you, {extracted_name}! 👋 I'm here to help with task status. What project/task status would you like to know?",
                     'is_greeting': True
                 })
+
+        # Check if user wants to exit
+        if is_exit_message(user_input):
+            exit_response = f"Thanks for chatting, {visitor_state['name']}! 👋 Hope I helped. Feel free to come back anytime!"
+            return jsonify({
+                'status': 'success',
+                'question': user_input,
+                'answer': exit_response,
+                'is_greeting': False,
+                'is_exit': True
+            })
         
         # Stage 2: Answer questions (name already captured)
         visitor_name = visitor_state['name']
