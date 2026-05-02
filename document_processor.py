@@ -14,7 +14,7 @@ Think of it like:
 - Creating an index for quick lookup
 """
 
-from sentence_transformers import SentenceTransformer
+from model2vec import StaticModel
 import chromadb
 from typing import List
 from pypdf import PdfReader
@@ -44,7 +44,7 @@ class DocumentProcessor:
         # Load the embedding model
         # SentenceTransformers converts text to 384-dimensional vectors
         # Why this model? It's small (~27MB), fast, and free
-        self.model = SentenceTransformer('Paraphrase-MiniLM-L3-v2', device='cpu')
+        self.model = StaticModel.from_pretrained("minishlab/potion-base-8M")
         
         # Initialize ChromaDB
         # This is a vector database - stores text and embeddings together
