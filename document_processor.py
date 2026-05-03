@@ -22,11 +22,6 @@ from pypdf import PdfReader
 """
 Document Processor: Chunking + Embeddings
 """
-
-from sentence_transformers import SentenceTransformer
-import chromadb
-from typing import List
-
 # Global cache - load model once
 _embedding_model = None
 
