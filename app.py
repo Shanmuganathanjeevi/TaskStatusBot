@@ -21,6 +21,7 @@ from qa_engine import QAEngine
 
 # Global processor - load tasks once on startup
 task_processor = None
+embedding_model = None
 
 # Initialize Model2Vec once on startup (not per request)
 print("Loading embedding model...")
