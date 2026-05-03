@@ -19,6 +19,26 @@ import chromadb
 from typing import List
 from pypdf import PdfReader
 
+"""
+Document Processor: Chunking + Embeddings
+"""
+
+from sentence_transformers import SentenceTransformer
+import chromadb
+from typing import List
+
+# Global cache - load model once
+_embedding_model = None
+
+def get_embedding_model():
+    """Get or load embedding model (lazy load with cache)"""
+    global _embedding_model
+    if _embedding_model is None:
+        print("Loading embedding model (first time only)...")
+        from model2vec import StaticModel
+        _embedding_model = StaticModel.from_pretrained("minishlab/potion-base-8M")
+        print("✓ Embedding model ready")
+    return _embedding_model
 
 class DocumentProcessor:
     """
@@ -44,8 +64,8 @@ class DocumentProcessor:
         # Load the embedding model
         # SentenceTransformers converts text to 384-dimensional vectors
         # Why this model? It's small (~27MB), fast, and free
-        global embedding_model
-        self.model = embedding_model  # Use pre-loaded global model
+        print("Initializing DocumentProcessor...")
+        self.model = get_embedding_model()  # Get cached model
         
         # Initialize ChromaDB
         # This is a vector database - stores text and embeddings together
