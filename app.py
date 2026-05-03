@@ -9,6 +9,7 @@ from datetime import datetime
 from flask import Flask, render_template, request, jsonify, session
 from werkzeug.utils import secure_filename
 import traceback
+import signal
 
 # Import your existing modules
 from document_processor import DocumentProcessor
@@ -388,6 +389,13 @@ with app.app_context():
 # ============================================================
 # MAIN
 # ============================================================
+
+def timeout_handler(signum, frame):
+    print("⚠️ Request timeout - model still loading")
+    raise TimeoutError("Request timeout")
+
+# Increase gunicorn timeout
+signal.signal(signal.SIGALRM, timeout_handler)
 
 if __name__ == '__main__':
     print("""
