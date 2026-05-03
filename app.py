@@ -26,6 +26,7 @@ embedding_model = None
 # Initialize Model2Vec once on startup (not per request)
 print("Loading embedding model...")
 from model2vec import StaticModel
+global embedding_model
 embedding_model = StaticModel.from_pretrained("minishlab/potion-base-8M")
 print("✓ Embedding model loaded")
 
