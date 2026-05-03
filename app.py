@@ -21,7 +21,6 @@ from qa_engine import QAEngine
 
 # Global processor - load tasks once on startup
 task_processor = None
-embedding_model = None
 
 # Initialize Model2Vec once on startup (not per request)
 print("Loading embedding model...")
@@ -397,13 +396,6 @@ with app.app_context():
 # ============================================================
 # MAIN
 # ============================================================
-
-def timeout_handler(signum, frame):
-    print("⚠️ Request timeout - model still loading")
-    raise TimeoutError("Request timeout")
-
-# Increase gunicorn timeout
-signal.signal(signal.SIGALRM, timeout_handler)
 
 if __name__ == '__main__':
     print("""
