@@ -22,6 +22,12 @@ from qa_engine import QAEngine
 # Global processor - load tasks once on startup
 task_processor = None
 
+# Initialize Model2Vec once on startup (not per request)
+print("Loading embedding model...")
+from model2vec import StaticModel
+embedding_model = StaticModel.from_pretrained("minishlab/potion-base-8M")
+print("✓ Embedding model loaded")
+
 def load_tasks():
     """Load tasks from CSV + TXT files on startup"""
     global task_processor

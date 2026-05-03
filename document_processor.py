@@ -44,7 +44,8 @@ class DocumentProcessor:
         # Load the embedding model
         # SentenceTransformers converts text to 384-dimensional vectors
         # Why this model? It's small (~27MB), fast, and free
-        self.model = StaticModel.from_pretrained("minishlab/potion-base-8M")
+        global embedding_model
+        self.model = embedding_model  # Use pre-loaded global model
         
         # Initialize ChromaDB
         # This is a vector database - stores text and embeddings together
